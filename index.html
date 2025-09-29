@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatyzacja procesów z N8N</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-light: #12385f;
+            --bg-medium: #0e6fa6;
+            --bg-dark: #074983;
+            --accent-orange: #d15124;
+            --text-light: #f5f5dc; /* Kremowy */
+            --text-dark: #074983;
+            --blue-accent: #074983;
+            --purple-accent: #6a0dad;
+            --pink-accent: #e75480;
+            --title-color: #A84FAA;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(180deg, var(--bg-light) 0%, var(--bg-medium) 50%, var(--bg-dark) 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+        
+        #pdf-export-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 30px;
+            background-color: var(--accent-orange);
+            color: var(--text-light);
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            z-index: 1000;
+        }
+
+        #pdf-export-button:hover {
+            background-color: #a6401c;
+            transform: scale(1.05);
+        }
+        
+        #pdf-export-button.hidden {
+            display: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: none;
+        }
+        
+        .container.active {
+            display: block;
+        }
+
+        /* Menu nawigacyjne */
+        .menu-bar {
+            width: 100%;
+            background-color: rgba(7, 73, 131, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .menu-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+            text-transform: uppercase;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: var(--accent-orange);
+            color: white;
+        }
+
+        /* Styl głównej strony */
+        .hero-section {
+            text-align: center;
+            padding-top: 20vh;
+            min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .hero-title {
+            font-family: 'Lato', sans-serif;
+            font-size: 4em;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5em;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .learn-more-btn {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--text-light);
+            background-color: var(--accent-orange);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            margin-top: 20px;
+        }
+
+        .learn-more-btn:hover {
+            background-color: #a6401c;
+            transform: scale(1.05);
+        }
+
+        /* Ogólne style dla sekcji */
+        h1, h2, h3 {
+            font-weight: bold;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            color: var(--title-color);
+        }
+
+        .card {
+            background-color: rgba(7, 73, 131, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+        }
+        
+        .card h3 {
+            font-size: 1.8em;
+            color: var(--pink-accent);
+            margin-top: 0;
+            border-bottom: 2px solid var(--pink-accent);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Akordeony */
+        .accordion {
+            background-color: rgba(14, 111, 166, 0.8);
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 1.5em;
+            transition: 0.4s;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .accordion:hover {
+            background-color: rgba(14, 111, 166, 1);
+        }
+
+        .accordion.active {
+            background-color: var(--accent-orange);
+        }
+
+        .panel {
+            padding: 0 18px;
+            background-color: rgba(14, 111, 166, 0.5);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .panel p {
+            padding: 15px 0;
+        }
+        
+        /* Sticky notes */
+        .sticky-notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            justify-content: center;
+            margin: 40px 0;
+        }
+
+        .sticky-note {
+            background-color: #fce883;
+            color: var(--text-dark);
+            padding: 25px;
+            border-radius: 5px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+            transform: rotate(2deg);
+            transition: transform 0.2s ease-in-out;
+            position: relative;
+        }
+        
+        .sticky-note::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            width: 30px;
+            height: 30px;
+            background-color: #fce883;
+            border-radius: 50%;
+            box-shadow: inset 0 2px 2px rgba(0,0,0,0.1);
+        }
+
+        .sticky-note:nth-child(even) {
+            transform: rotate(-2deg);
+        }
+
+        .sticky-note:hover {
+            transform: scale(1.05) rotate(0deg);
+            z-index: 10;
+        }
+        
+        .sticky-note p {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        /* Lista linków */
+        .links-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .links-list li {
+            background-color: rgba(14, 111, 166, 0.8);
+            border-left: 5px solid var(--accent-orange);
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .links-list li:hover {
+            background-color: rgba(14, 111, 166, 1);
+        }
+
+        .links-list a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .links-list p {
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        /* Quiz */
+        .quiz-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: rgba(7, 73, 131, 0.7);
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .quiz-question {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .quiz-options {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .quiz-option {
+            background-color: rgba(14, 111, 166, 0.8);
+            color: var(--text-light);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        
+        .quiz-option:hover {
+            background-color: rgba(14, 111, 166, 1);
+            transform: translateX(5px);
+        }
+        
+        .quiz-option.selected {
+            border: 2px solid var(--accent-orange);
+        }
+
+        .quiz-option.correct {
+            background-color: #4CAF50;
+            border: 2px solid #4CAF50;
+        }
+
+        .quiz-option.incorrect {
+            background-color: #f44336;
+            border: 2px solid #f44336;
+        }
+        
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .quiz-navigation button, .check-quiz-btn {
+            padding: 10px 20px;
+            background-color: var(--accent-orange);
+            color: var(--text-light);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .quiz-navigation button:disabled, .check-quiz-btn:disabled {
+            background-color: #888;
+            cursor: not-allowed;
+        }
+        
+        .quiz-result {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.5em;
+        }
+
+        .quiz-result img {
+            max-width: 200px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .reset-quiz-btn {
+            padding: 10px 20px;
+            background-color: var(--purple-accent);
+            color: var(--text-light);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .reset-quiz-btn:hover {
+            background-color: #551a8b;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .errors-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .error-item {
+            background-color: rgba(7, 73, 131, 0.7);
+            border-left: 5px solid #f44336;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .error-item h4 {
+            color: #f44336;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+
+        .error-item p {
+            margin-bottom: 0;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="menu-bar">
+    <a class="menu-item active" data-section="home">Strona główna</a>
+    <a class="menu-item" data-section="key-concepts">Kluczowe pojęcia</a>
+    <a class="menu-item" data-section="examples">Przykłady</a>
+    <a class="menu-item" data-section="to-remember">Do zapamiętania</a>
+    <a class="menu-item" data-section="common-errors">Najczęstsze błędy</a>
+    <a class="menu-item" data-section="more-knowledge">Więcej wiedzy</a>
+    <a class="menu-item" data-section="quiz">Quiz</a>
+</div>
+
+<div id="home" class="container active">
+    <div class="hero-section">
+        <h1 class="hero-title">Automatyzacja procesów z N8N</h1>
+        <p class="hero-subtitle">Jak wykorzystać platformę N8N do automatyzacji zadań biznesowych i tworzenia agentów AI.</p>
+        <button class="learn-more-btn" onclick="showSection('key-concepts')">Chcę wiedzieć więcej</button>
+    </div>
+</div>
+
+<div id="key-concepts" class="container">
+    <div class="card">
+        <h2>Kluczowe pojęcia</h2>
+        <button class="accordion">Platforma N8N</button>
+        <div class="panel">
+            <p><strong>Definicja:</strong> N8N to elastyczne narzędzie do automatyzacji procesów, które pozwala na łączenie ze sobą różnych aplikacji i usług. Jest to platforma typu **open source**, co oznacza, że możesz z niej korzystać w chmurze (N8N Cloud) lub zainstalować ją lokalnie na swoim komputerze lub serwerze. Jej głównym celem jest budowanie **przepływów prac**, które wykonują powtarzalne czynności za Ciebie w pełni automatycznie. N8N może integrować się z ponad tysiącem gotowych aplikacji, od poczty e-mail po bazy danych i narzędzia AI.</p>
+        </div>
+        
+        <button class="accordion">Workflow (Przepływ prac)</button>
+        <div class="panel">
+            <p><strong>Definicja:</strong> Workflow, czyli przepływ prac, to sekwencja kroków realizujących konkretny proces. To **szkielet automatyzacji**, w którym definiujesz, co ma się dziać po kolei. Na przykład, po otrzymaniu wiadomości e-mail, przepływ prac może automatycznie pobrać załącznik, zapisać go w chmurze i zaktualizować arkusz kalkulacyjny. Raz zbudowany przepływ może być używany wielokrotnie, bez konieczności Twojej ingerencji.</p>
+        </div>
+        
+        <button class="accordion">Węzeł (Node)</button>
+        <div class="panel">
+            <p><strong>Definicja:</strong> Węzeł to podstawowy element, **"klocek"** Twojej automatyzacji. Każdy węzeł ma swoją unikalną rolę, np. pobieranie danych, przetwarzanie ich, czy wysyłanie ich dalej. Możemy wyróżnić cztery główne typy węzłów: **Trigger nodes** (uruchamiające przepływ, np. odbiór e-maila), **Action nodes** (wykonujące akcje w aplikacjach zewnętrznych), **Core nodes** (uniwersalne funkcje i logika, np. harmonogram) oraz **Cluster nodes** (grupy węzłów, które współpracują, jak np. agent AI).</p>
+        </div>
+
+        <button class="accordion">Credentials (Poświadczenia)</button>
+        <div class="panel">
+            <p><strong>Definicja:</strong> Credentials, czyli poświadczenia, to dane autoryzacyjne, które dają platformie N8N dostęp do Twoich kont w aplikacjach zewnętrznych (np. Google Drive, Gmail, Stripe). Są niezbędne do wykonywania akcji w Twoim imieniu. Aby je utworzyć, musisz zalogować się do danej usługi i uzyskać **klucz API Key** lub autoryzację **OAuth**, a następnie wkleić te dane do N8N. Dzięki temu, N8N może działać, nie wymagając od Ciebie każdorazowego logowania się do połączonych aplikacji.</p>
+        </div>
+        
+        <button class="accordion">Agent AI (AI Agent)</button>
+        <div class="panel">
+            <p><strong>Definicja:</strong> Agent AI to zaawansowany przepływ prac, który wykorzystuje sztuczną inteligencję do podejmowania decyzji i wykonywania działań w czasie rzeczywistym. Przykładem jest agent, który **monitoruje skrzynkę e-mail**, klasyfikuje wiadomości jako zapytania, zamówienia lub spam, a następnie podejmuje odpowiednie kroki, np. wysyła automatyczną odpowiedź. Agent AI wykorzystuje modele językowe (jak Google Gemini) i może być zintegrowany z różnymi narzędziami, które stanowią dla niego "narzędzia" do działania.</p>
+        </div>
+    </div>
+</div>
+
+<div id="examples" class="container">
+    <div class="card">
+        <h2>Przykłady</h2>
+        
+        <h3>Przykład 1: Automatyzacja rozliczania faktur</h3>
+        <p>W materiale kursowym przedstawiono szczegółowy workflow, który automatyzuje rozliczanie faktur. Proces ten, idealny dla małych firm, polega na: ręcznym uruchomieniu procesu, który przeszukuje folder na Google Drive pod kątem faktur z wybranego okresu. Następnie N8N pobiera pliki, ekstrahuje z nich dane (np. numer faktury, kwoty VAT) za pomocą prostego kodu JavaScript opartego na wyrażeniach regularnych. Po wyodrębnieniu danych, faktury są filtrowane (np. po dacie), rozdzielane na sprzedażowe i zakupowe, a następnie zapisywane w odpowiednich zakładkach nowego arkusza Google Sheets. Na koniec, wszystkie dane są łączone, a końcowy węzeł oblicza różnicę VAT, podsumowując cały proces.</p>
+        
+        <h3>Przykład 2: Inteligentny agent e-mail</h3>
+        <p>Drugi przykład pokazuje, jak stworzyć agenta AI, który w czasie rzeczywistym zarządza skrzynką e-mail. Węzeł typu **Trigger** (Gmail) uruchamia proces co minutę, sprawdzając nowe wiadomości. Następnie węzeł typu **Cluster Node** (AI Agent) analizuje treść wiadomości, używając modelu językowego Google Gemini oraz **węzła pamięci**, aby nie gubić kontekstu rozmowy. Agent podejmuje decyzję, czy wiadomość jest zapytaniem, zamówieniem, czy spamem, a następnie podejmuje konkretne akcje (np. wysyła e-mail do odpowiedniego pracownika z danymi klienta lub automatyczną odpowiedź o cenie i dostępności produktu). Agent korzysta z "narzędzi", które są innymi węzłami N8N, np. do wysyłki e-maili czy pobierania danych o produktach z arkusza kalkulacyjnego.</p>
+        
+        <h3>Przykład 3: Różnice między N8N a innymi narzędziami</h3>
+        <p>W materiale kursowym poruszona została kwestia, że N8N nie jest jedynym narzędziem do automatyzacji na rynku. Wiele z nich, jak na przykład platforma **Make**, również oferuje potężne możliwości i wizualne edytory. N8N wyróżnia się jednak swoją **elastycznością** (opcja chmury vs. instalacja lokalna), **bezpieczeństwem** (ponad 1000 integracji), **szybkim prototypowaniem** (możliwość budowania i testowania za darmo) oraz potężną, **otwartą społecznością** użytkowników i twórców, która wspiera projekt. Ta elastyczność i możliwość pracy lokalnie jest szczególnie istotna w projektach, które wymagają szczególnych standardów bezpieczeństwa i przetwarzania danych.</p>
+    </div>
+</div>
+
+<div id="to-remember" class="container">
+    <h2>Do zapamiętania</h2>
+    <div class="sticky-notes-grid">
+        <div class="sticky-note">
+            <p>N8N to projekt **open source**, co daje Ci pełną kontrolę nad infrastrukturą. Możesz go używać w chmurze lub lokalnie.</p>
+        </div>
+        <div class="sticky-note">
+            <p>Każdy **workflow** (przepływ prac) składa się z **węzłów** (nodes), które są jak klocki Lego Twojej automatyzacji.</p>
+        </div>
+        <div class="sticky-note">
+            <p>Zawsze używaj **credentials** (poświadczeń), aby N8N mogło bezpiecznie łączyć się z zewnętrznymi aplikacjami w Twoim imieniu.</p>
+        </div>
+        <div class="sticky-note">
+            <p>**Trigger nodes** to węzły, które rozpoczynają cały proces. Bez nich workflow nie ruszy automatycznie.</p>
+        </div>
+        <div class="sticky-note">
+            <p>**Testuj** pojedyncze węzły (execute step) i całe przepływy na danych testowych, zanim uruchomisz je na żywo.</p>
+        </div>
+        <div class="sticky-note">
+            <p>**Agent AI** w N8N może podejmować autonomiczne decyzje na podstawie promptów, co pozwala na automatyzację skomplikowanych procesów.</p>
+        </div>
+    </div>
+</div>
+
+<div id="common-errors" class="container">
+    <div class="card">
+        <h2>Najczęstsze błędy</h2>
+        <ul class="errors-list">
+            <li class="error-item">
+                <h4>Nieprawidłowa konfiguracja poświadczeń (Credentials)</h4>
+                <p>Często zdarza się, że integracja nie działa z powodu pominięcia kroku, np. niewłączenia odpowiedniego API w Google Cloud Console. Zawsze sprawdzaj dokumentację N8N i pamiętaj, że dane dostępowe (Client ID, Client Secret) są poufne.</p>
+            </li>
+            <li class="error-item">
+                <h4>Ignorowanie testowania</h4>
+                <p>Uruchamianie przepływu pracy na danych produkcyjnych (np. na liście mailingowej klientów) bez uprzedniego testowania na środowisku próbnym. Zawsze zaczynaj od małych, kontrolowanych testów, aby uniknąć niepożądanych efektów.</p>
+            </li>
+            <li class="error-item">
+                <h4>Brak obsługi błędów</h4>
+                <p>Niezbudowanie ścieżek postępowania w przypadku, gdy coś pójdzie nie tak. Przykładowo, jeśli AI Agent nie rozpozna kategorii e-maila, powinien mieć zdefiniowaną akcję, a nie kończyć pracę błędem. Dobry przepływ powinien przewidywać różne scenariusze.</p>
+            </li>
+            <li class="error-item">
+                <h4>Nieefektywne użycie węzłów</h4>
+                <p>Tworzenie skomplikowanych węzłów, gdy można było użyć kilku prostszych, np. nadmierne używanie węzła CODE zamiast gotowych, dedykowanych węzłów. Zawsze staraj się znaleźć najbardziej intuicyjne i czytelne rozwiązanie, aby Twój workflow był łatwy do utrzymania.</p>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div id="more-knowledge" class="container">
+    <div class="card">
+        <h2>Więcej wiedzy</h2>
+        <ul class="links-list">
+            <li>
+                <a href="https://n8n.io/integrations" target="_blank">Lista integracji N8N</a>
+                <p>Oficjalna strona N8N z pełną listą wszystkich ponad 1000 gotowych integracji. Możesz przeglądać je według kategorii, co pozwoli Ci szybko znaleźć narzędzia, których potrzebujesz do automatyzacji.</p>
+            </li>
+            <li>
+                <a href="https://docs.n8n.io/" target="_blank">Dokumentacja N8N</a>
+                <p>Bardzo szczegółowa i aktualna dokumentacja platformy N8N. Jest to niezastąpione źródło wiedzy, gdy napotkasz problem z konkretnym węzłem lub konfiguracją. Znajdziesz tu również przykłady i poradniki.</p>
+            </li>
+            <li>
+                <a href="https://github.com/n8n-io/n8n" target="_blank">N8N na GitHubie</a>
+                <p>Oficjalne repozytorium N8N, gdzie możesz znaleźć kod źródłowy platformy, śledzić jej rozwój, a także zgłaszać problemy lub proponować nowe funkcje. To idealne miejsce dla osób, które chcą lepiej poznać projekt i jego społeczność.</p>
+            </li>
+            <li>
+                <a href="https://n8n.io/workflows" target="_blank">Gotowe szablony workflow N8N</a>
+                <p>Strona, na której znajdziesz setki gotowych, działających szablonów przepływów pracy. Możesz je pobrać i użyć od razu, dostosowując je do swoich potrzeb. To świetny punkt wyjścia do nauki i eksperymentowania.</p>
+            </li>
+            <li>
+                <a href="https://cloud.google.com/docs/authentication/api-keys" target="_blank">Klucze API w Google Cloud Console</a>
+                <p>Oficjalna dokumentacja Google Cloud na temat kluczy API. Jest to przydatne, gdy potrzebujesz autoryzacji do usług Google, a nie wiesz, jak prawidłowo skonfigurować swoje poświadczenia. Pomaga zrozumieć proces uwierzytelniania w ekosystemie Google.</p>
+            </li>
+            <li>
+                <a href="https://www.make.com/" target="_blank">Make (dawniej Integromat)</a>
+                <p>Strona internetowa platformy Make, jednego z głównych konkurentów N8N. Zapoznanie się z tym narzędziem pozwala zrozumieć różnice między platformami i zobaczyć, jak inne narzędzia podchodzą do automatyzacji i wizualizacji procesów.</p>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div id="quiz" class="container">
+    <div class="quiz-container">
+        <h2>Quiz wiedzy</h2>
+        <div id="quiz-content">
+            <div id="question-number"></div>
+            <div id="question"></div>
+            <ul id="options" class="quiz-options"></ul>
+        </div>
+        <div id="quiz-navigation" class="quiz-navigation">
+            <button id="prev-btn" class="hidden">Wróć do poprzedniego</button>
+            <button id="next-btn">Kolejne pytanie</button>
+            <button id="check-btn" class="hidden">Sprawdź wiedzę</button>
+        </div>
+        <div id="quiz-result" class="quiz-result hidden">
+            <div id="score"></div>
+            <img id="cat-image" src="" alt="Wynik quizu">
+            <p id="motivational-quote"></p>
+            <button id="reset-btn" class="reset-quiz-btn">Spróbuj jeszcze raz</button>
+        </div>
+    </div>
+</div>
+
+<button id="pdf-export-button">Download PDF</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const menuItems = document.querySelectorAll('.menu-item');
+        const containers = document.querySelectorAll('.container');
+        const learnMoreBtn = document.querySelector('.learn-more-btn');
+        const pdfButton = document.getElementById('pdf-export-button');
+        
+        function showSection(sectionId) {
+            containers.forEach(container => {
+                container.classList.remove('active');
+            });
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelector(`.menu-item[data-section="${sectionId}"]`).classList.add('active');
+            
+            if (sectionId === 'home') {
+                pdfButton.classList.add('hidden');
+            } else {
+                pdfButton.classList.remove('hidden');
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const sectionId = item.getAttribute('data-section');
+                showSection(sectionId);
+            });
+        });
+
+        if (learnMoreBtn) {
+            learnMoreBtn.addEventListener('click', () => {
+                showSection('key-concepts');
+            });
+        }
+        
+        // Akordeony
+        const accordions = document.querySelectorAll('.accordion');
+        accordions.forEach(acc => {
+            acc.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        });
+        
+        // Quiz
+        const questions = [
+            {
+                question: "Co jest głównym celem platformy N8N?",
+                options: ["Tworzenie stron internetowych", "Edycja zdjęć", "Automatyzacja procesów biznesowych", "Tworzenie gier wideo"],
+                correctAnswer: "Automatyzacja procesów biznesowych"
+            },
+            {
+                question: "Czym jest 'workflow' w kontekście N8N?",
+                options: ["Program do rysowania schematów", "Sekwencja kroków automatyzacji", "Typ bazy danych", "Nazwa licencji na platformę"],
+                correctAnswer: "Sekwencja kroków automatyzacji"
+            },
+            {
+                question: "Jakie są dwa tryby pracy platformy N8N?",
+                options: ["Tryb offline i online", "Chmura i instalacja lokalna", "Darmowy i płatny", "Tryb standardowy i zaawansowany"],
+                correctAnswer: "Chmura i instalacja lokalna"
+            },
+            {
+                question: "Co to jest 'node' w N8N?",
+                options: ["Protokół komunikacji", "Błąd w oprogramowaniu", "Podstawowy element budowy workflow", "Rodzaj licencji"],
+                correctAnswer: "Podstawowy element budowy workflow"
+            },
+            {
+                question: "Jaka jest rola węzła 'Trigger'?",
+                options: ["Kończenie przepływu pracy", "Uruchamianie przepływu pracy", "Przetwarzanie danych liczbowych", "Wysyłanie powiadomień"],
+                correctAnswer: "Uruchamianie przepływu pracy"
+            },
+            {
+                question: "Czym są 'credentials'?",
+                options: ["Kopie zapasowe danych", "Dane autoryzacyjne do usług zewnętrznych", "Szybkie szablony workflow", "Informacje o błędach w systemie"],
+                correctAnswer: "Dane autoryzacyjne do usług zewnętrznych"
+            },
+            {
+                question: "Ile gotowych integracji obsługuje N8N?",
+                options: ["Około 100", "Poniżej 500", "Ponad 1000", "Nieograniczoną liczbę"],
+                correctAnswer: "Ponad 1000"
+            },
+            {
+                question: "Który węzeł został wykorzystany do łączenia danych z faktur sprzedażowych i zakupowych w przykładzie?",
+                options: ["SUMMARIZE", "APPEND ROW", "MERGE", "IF"],
+                correctAnswer: "MERGE"
+            },
+            {
+                question: "Co jest kluczowym elementem dla agenta AI, aby pamiętał kontekst rozmowy?",
+                options: ["Narzędzie do wysyłania e-maili", "Węzeł pamięci (Simple Memory)", "Model językowy Gemini", "Węzeł Code"],
+                correctAnswer: "Węzeł pamięci (Simple Memory)"
+            },
+            {
+                question: "W którym miejscu należy włączyć odpowiednie API, aby połączyć N8N z usługami Google?",
+                options: ["W edytorze N8N", "W Google Cloud Console", "W Gmailu", "W Google Sheets"],
+                correctAnswer: "W Google Cloud Console"
+            },
+            {
+                question: "Jaki węzeł jest używany do warunkowego filtrowania danych?",
+                options: ["Trigger", "If", "Merge", "Code"],
+                correctAnswer: "If"
+            },
+            {
+                question: "Jak często agent e-mail w przykładzie sprawdza nowe wiadomości?",
+                options: ["Co godzinę", "Raz dziennie", "Co minutę", "Raz na 5 minut"],
+                correctAnswer: "Co minutę"
+            },
+            {
+                question: "Jaki jest jeden z głównych atutów N8N w porównaniu do innych narzędzi?",
+                options: ["Niższa cena", "Brak potrzeby instalacji", "Otwarty kod źródłowy (open source)", "Prostszy interfejs"],
+                correctAnswer: "Otwarty kod źródłowy (open source)"
+            },
+            {
+                question: "Jaki typ węzła służy do wywoływania zdarzeń i interakcji z aplikacjami zewnętrznymi?",
+                options: ["Trigger nodes", "Core nodes", "Cluster nodes", "Action nodes"],
+                correctAnswer: "Action nodes"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const questionNumberElement = document.getElementById('question-number');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const checkBtn = document.getElementById('check-btn');
+        const resultContainer = document.getElementById('quiz-result');
+        const scoreElement = document.getElementById('score');
+        const catImage = document.getElementById('cat-image');
+        const motivationalQuote = document.getElementById('motivational-quote');
+        const resetBtn = document.getElementById('reset-btn');
+
+        function showQuestion(index) {
+            if (index >= questions.length || index < 0) {
+                return;
+            }
+            const q = questions[index];
+            questionNumberElement.textContent = `${index + 1}/${questions.length}`;
+            questionElement.textContent = q.question;
+            optionsElement.innerHTML = '';
+            q.options.forEach((option, i) => {
+                const li = document.createElement('li');
+                li.textContent = option;
+                li.classList.add('quiz-option');
+                if (userAnswers[index] === option) {
+                    li.classList.add('selected');
+                }
+                li.addEventListener('click', () => {
+                    userAnswers[index] = option;
+                    document.querySelectorAll('#options .quiz-option').forEach(item => item.classList.remove('selected'));
+                    li.classList.add('selected');
+                    updateNavigationButtons();
+                });
+                optionsElement.appendChild(li);
+            });
+            updateNavigationButtons();
+            resultContainer.classList.add('hidden');
+        }
+
+        function updateNavigationButtons() {
+            prevBtn.classList.toggle('hidden', currentQuestionIndex === 0);
+            nextBtn.classList.toggle('hidden', currentQuestionIndex === questions.length - 1);
+            checkBtn.classList.toggle('hidden', currentQuestionIndex !== questions.length - 1);
+
+            const isAnswered = userAnswers[currentQuestionIndex] !== null;
+            if (currentQuestionIndex === questions.length - 1) {
+                checkBtn.disabled = userAnswers.includes(null);
+            }
+            nextBtn.disabled = !isAnswered;
+        }
+
+        function checkAnswers() {
+            let correctCount = 0;
+            questions.forEach((q, i) => {
+                const selectedOption = userAnswers[i];
+                if (selectedOption === q.correctAnswer) {
+                    correctCount++;
+                }
+            });
+
+            optionsElement.innerHTML = '';
+            questions[currentQuestionIndex].options.forEach(option => {
+                const li = document.createElement('li');
+                li.textContent = option;
+                li.classList.add('quiz-option');
+                if (option === questions[currentQuestionIndex].correctAnswer) {
+                    li.classList.add('correct');
+                } else if (option === userAnswers[currentQuestionIndex] && option !== questions[currentQuestionIndex].correctAnswer) {
+                    li.classList.add('incorrect');
+                }
+                optionsElement.appendChild(li);
+            });
+
+            showResult(correctCount);
+        }
+
+        function showResult(correctCount) {
+            document.getElementById('quiz-content').classList.add('hidden');
+            document.getElementById('quiz-navigation').classList.add('hidden');
+            resultContainer.classList.remove('hidden');
+
+            const totalQuestions = questions.length;
+            const percentage = Math.round((correctCount / totalQuestions) * 100);
+            scoreElement.textContent = `Twój wynik: ${correctCount}/${totalQuestions}`;
+
+            let catSrc = '';
+            let quote = '';
+            if (percentage <= 25) {
+                catSrc = 'sad cat.jfif';
+                quote = "Nie poddawaj się! Każdy początek jest trudny. Spróbuj jeszcze raz, a zobaczysz, że będzie coraz lepiej.";
+            } else if (percentage <= 40) {
+                catSrc = 'angry cat.jpg';
+                quote = "Dobrze, że próbujesz! Analizuj błędy i idź do przodu. Wiedza czeka na Ciebie!";
+            } else if (percentage <= 60) {
+                catSrc = 'disapointed cat.jpg';
+                quote = "Jesteś na dobrej drodze! Już wiesz całkiem sporo. Powtórz materiał i osiągnij jeszcze lepszy wynik!";
+            } else if (percentage <= 70) {
+                catSrc = 'happy cat.jpg';
+                quote = "Świetna robota! To bardzo solidny wynik. Jesteś blisko perfekcji, wystarczy kilka drobnych poprawek!";
+            } else {
+                catSrc = 'celebraiting cat.jfif';
+                quote = "Fantastyczny wynik! Jesteś ekspertem w tej dziedzinie. Gratulacje!";
+            }
+
+            catImage.src = catSrc;
+            motivationalQuote.textContent = quote;
+        }
+        
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            document.getElementById('quiz-content').classList.remove('hidden');
+            document.getElementById('quiz-navigation').classList.remove('hidden');
+            resultContainer.classList.add('hidden');
+            showQuestion(currentQuestionIndex);
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion(currentQuestionIndex);
+            }
+        });
+
+        checkBtn.addEventListener('click', checkAnswers);
