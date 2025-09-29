@@ -108,7 +108,11 @@
             color: var(--white);
             font-weight: 700;
             margin-bottom: 10px;
-            white-space: nowrap;
+        }
+        
+        .landing-page h1 span {
+            display: block;
+            line-height: 1.2;
         }
 
         .landing-page p {
@@ -133,7 +137,7 @@
         }
         
         .page-title {
-            color: var(--accent-purple);
+            color: var(--light-cream);
             font-weight: bold;
             font-size: 2.5em;
             text-align: center;
@@ -153,7 +157,7 @@
         }
         
         h4 {
-            color: var(--dark-text);
+            color: var(--navy-blue-text);
         }
 
         p, li {
@@ -228,7 +232,7 @@
 
         .sticky-note {
             background-color: var(--light-cream);
-            color: var(--dark-text);
+            color: var(--navy-blue-text);
             padding: 20px;
             border-radius: 5px;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
@@ -248,7 +252,7 @@
 
         .sticky-note h4 {
             margin-top: 0;
-            color: var(--dark-text);
+            color: var(--navy-blue-text);
         }
         
         .quiz-container {
@@ -347,7 +351,10 @@
 <div class="container">
     <div id="home" class="tab-content active">
         <div class="landing-page">
-            <h1>Platforma N8N - Automatyzacja Procesów Biznesowych z AI</h1>
+            <h1>
+                <span>Platforma N8N - Automatyzacja Procesów</span>
+                <span>Biznesowych z AI</span>
+            </h1>
             <p>Odkryj, jak budować inteligentne przepływy pracy bez pisania kodu.</p>
             <a href="#" class="btn" id="learn-more-btn">Chcę wiedzieć więcej</a>
         </div>
