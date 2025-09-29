@@ -12,16 +12,18 @@
             --dark-blue-3: #12385f;
             --accent-orange: #d15124;
             --accent-purple: #A84FAA;
-            --light-cream: #f5f5f5;
+            --light-cream: #f5f5dc;
             --white: #ffffff;
-            --text-color: #e0e0e0;
+            --dark-text: #1a1a2e;
+            --navy-blue-text: #000080;
+            --light-text: #e0e0e0;
             --link-color: #a0c4ff;
         }
 
         body {
             font-family: 'Lato', sans-serif;
             background: linear-gradient(180deg, var(--dark-blue-2) 0%, var(--dark-blue-1) 100%);
-            color: var(--text-color);
+            color: var(--light-text);
             margin: 0;
             padding: 0;
             line-height: 1.6;
@@ -55,7 +57,7 @@
         }
 
         .menu-bar a {
-            color: var(--text-color);
+            color: var(--light-text);
             text-decoration: none;
             font-weight: bold;
             padding: 10px 20px;
@@ -105,12 +107,13 @@
             font-size: 3.5em;
             color: var(--white);
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            white-space: nowrap;
         }
 
         .landing-page p {
             font-size: 1.5em;
-            color: var(--light-cream);
+            color: var(--light-text);
             margin-bottom: 40px;
         }
 
@@ -129,7 +132,7 @@
             background-color: #b8451c;
         }
         
-        h1 {
+        .page-title {
             color: var(--accent-purple);
             font-weight: bold;
             font-size: 2.5em;
@@ -138,16 +141,24 @@
         }
 
         h2 {
-            color: var(--accent-orange);
+            color: var(--light-cream);
             font-size: 2em;
             margin-top: 30px;
             border-bottom: 2px solid var(--accent-orange);
             padding-bottom: 5px;
         }
+        
+        h3 {
+            color: var(--light-cream);
+        }
+        
+        h4 {
+            color: var(--dark-text);
+        }
 
         p, li {
             font-size: 1.1em;
-            color: var(--text-color);
+            color: var(--light-text);
         }
         
         .card {
@@ -156,20 +167,11 @@
             padding: 25px;
             margin-bottom: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            position: relative;
-            overflow: hidden;
         }
         
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            width: 30px;
-            height: 30px;
-            background: var(--accent-purple);
-            border-radius: 5px;
-            transform: rotate(45deg);
+        .card h2 {
+            border-bottom: 2px solid var(--accent-orange);
+            color: var(--light-cream);
         }
 
         .accordion-item {
@@ -210,34 +212,9 @@
         .accordion-header.active .icon {
             transform: rotate(90deg);
         }
-
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-            border-bottom: 1px dotted var(--link-color);
-        }
-
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            background-color: var(--dark-blue-3);
-            color: var(--white);
-            text-align: center;
-            border-radius: 6px;
-            padding: 10px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            width: 300px;
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
+        
+        .accordion-content p {
+            color: var(--light-text);
         }
 
         .sticky-notes-container {
@@ -251,7 +228,7 @@
 
         .sticky-note {
             background-color: var(--light-cream);
-            color: #333;
+            color: var(--dark-text);
             padding: 20px;
             border-radius: 5px;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
@@ -271,7 +248,7 @@
 
         .sticky-note h4 {
             margin-top: 0;
-            color: var(--dark-blue-1);
+            color: var(--dark-text);
         }
         
         .quiz-container {
@@ -286,7 +263,7 @@
         }
         
         .question h3 {
-            color: var(--accent-orange);
+            color: var(--light-cream);
         }
         
         .options label {
@@ -377,78 +354,68 @@
     </div>
     
     <div id="key-concepts" class="tab-content">
-        <h1>Kluczowe pojęcia</h1>
+        <h1 class="page-title">Kluczowe pojęcia</h1>
         <div class="card">
-            <h2>N8N</h2>
-            <p><strong>N8N</strong> to wszechstronna, elastyczna i otwarta platforma do automatyzacji, która umożliwia łączenie ze sobą różnych aplikacji i usług. Dzięki niej możesz tworzyć zautomatyzowane przepływy pracy (tzw. workflow) bez potrzeby posiadania zaawansowanej wiedzy programistycznej. Służy do automatyzowania powtarzalnych zadań, takich jak przetwarzanie danych z faktur, odpowiadanie na maile czy synchronizacja arkuszy kalkulacyjnych.</p>
+            <h2>Czym jest platforma N8N?</h2>
+            <p><strong>N8N</strong> to elastyczne narzędzie do automatyzacji, które pozwala łączyć ze sobą różne aplikacje i usługi, by wykonywały powtarzalne zadania w pełni automatycznie. Można go używać do tworzenia przepływów prac, nazywanych **workflow**, które są ciągami kroków realizującymi konkretne czynności bez ręcznej ingerencji. N8N jest rozwiązaniem typu **open source**, co oznacza, że jego kod źródłowy jest dostępny dla wszystkich, a platformę można instalować zarówno w chmurze, jak i lokalnie na własnym serwerze czy komputerze.</p>
         </div>
         
         <div class="card">
-            <h2>Workflow</h2>
-            <p><strong>Workflow</strong> (przepływ pracy) to ciąg kroków i instrukcji, które platforma N8N wykonuje w celu zrealizowania konkretnego zadania. Jest to serce każdej automatyzacji, gdzie definiujesz, jakie aplikacje mają się ze sobą komunikować i w jakiej kolejności. Workflow może być prosty, np. wysłanie powiadomienia, lub bardzo złożony, jak automatyczne przetwarzanie faktur.</p>
-        </div>
-        
-        <div class="card">
-            <h2>Węzeł (Node)</h2>
-            <p><strong>Węzeł</strong> to podstawowy, pojedynczy element składowy każdego workflow w N8N. Każdy węzeł ma swoje konkretne zadanie, np. pobranie danych z Google Drive, przetworzenie tekstu, wysłanie e-maila. Węzły łączą się ze sobą strzałkami, tworząc logiczny ciąg działań. Wyróżniamy cztery główne typy węzłów:</p>
+            <h2>Jakie są podstawowe elementy workflow?</h2>
+            <p><strong>Workflow</strong> (przepływ pracy) to serce każdej automatyzacji, gdzie definiujesz, jakie aplikacje mają się ze sobą komunikować i w jakiej kolejności. Składa się z **węzłów** (nodes), które są jak klocki Lego - każdy ma swoją konkretną funkcję. Węzły połączone są strzałkami, które określają, w jakim kierunku przepływają dane. Wyróżniamy cztery główne typy węzłów:</p>
             <ul>
-                <li><strong>Trigger nodes:</strong> Uruchamiają cały przepływ pracy w odpowiedzi na zdarzenie (np. nowy e-mail, harmonogram).</li>
-                <li><strong>Action nodes:</strong> Wykonują akcje w zewnętrznych aplikacjach (np. pobieranie, edytowanie lub wysyłanie danych).</li>
-                <li><strong>Core nodes:</strong> Zawierają uniwersalne funkcje logiczne i programistyczne (np. warunki 'if', pętle).</li>
-                <li><strong>Cluster nodes:</strong> Grupy węzłów, które współpracują ze sobą, często wykorzystywane w zaawansowanych procesach, np. z agentami AI.</li>
+                <li><strong>Trigger nodes:</strong> Węzły, które rozpoczynają cały przepływ pracy w odpowiedzi na jakieś zdarzenie, np. nadejście e-maila, plik w chmurze, lub uruchomienie o określonej godzinie.</li>
+                <li><strong>Action nodes:</strong> Węzły, które wykonują akcje w zewnętrznych aplikacjach, np. pobierają, edytują, wysyłają dane lub wywołują zdarzenia.</li>
+                <li><strong>Core nodes:</strong> Węzły zawierające uniwersalne funkcje i logikę, np. warunki (if), harmonogramy, lub uniwersalne wywołania API (HTTP request).</li>
+                <li><strong>Cluster nodes:</strong> Grupy węzłów, które współpracują ze sobą, w szczególności w zaawansowanych procesach z agentami AI.</li>
             </ul>
         </div>
         
         <div class="card">
-            <h2>Poświadczenia (Credentials)</h2>
-            <p><strong>Poświadczenia</strong> to dane dostępowe (np. API Key, login i hasło), które autoryzują platformę N8N do łączenia się z Twoimi kontami w zewnętrznych aplikacjach. Bez nich N8N nie może wykonywać działań w Twoim imieniu, np. pobierać plików z Google Drive czy zapisywać danych w Google Sheets. Poświadczenia są bezpiecznie przechowywane na platformie i pozwalają na jednorazowe skonfigurowanie dostępu, bez konieczności każdorazowego logowania się.</p>
+            <h2>Czym są poświadczenia (Credentials)?</h2>
+            <p><strong>Poświadczenia</strong> to dane dostępowe (np. API Key, login i hasło), które autoryzują platformę N8N do łączenia się z Twoimi kontami w zewnętrznych aplikacjach i wykonywania operacji w Twoim imieniu. Dzięki nim, N8N zyskuje bezpieczny dostęp do usług, takich jak Google Drive czy Gmail, bez konieczności każdorazowego logowania się. Schemat konfiguracji poświadczeń jest podobny dla większości zewnętrznych usług: generujesz klucz dostępu w danej aplikacji, a następnie wklejasz go do N8N w zakładce Credentials.</p>
         </div>
         
         <div class="card">
-            <h2>Agent AI</h2>
-            <p><strong>Agent AI</strong> to zaawansowany przepływ pracy, który wykorzystuje modele językowe (np. Google Gemini) do podejmowania decyzji i wykonywania złożonych zadań w sposób zbliżony do ludzkiej inteligencji. Agent AI może analizować treści (np. e-maile), klasyfikować je (np. jako zapytanie lub zamówienie) i podejmować odpowiednie akcje, np. wysłanie odpowiedzi lub przekazanie sprawy do pracownika. Taki agent może działać autonomicznie w czasie rzeczywistym.</p>
+            <h2>Co to jest Agent AI?</h2>
+            <p><strong>Agent AI</strong> to zaawansowany przepływ pracy, który wykorzystuje modele językowe (np. Google Gemini) do podejmowania decyzji i wykonywania złożonych zadań w sposób zbliżony do ludzkiej inteligencji. Taki agent może analizować treści (np. e-maile), klasyfikować je (np. jako zapytanie lub zamówienie) i podejmować odpowiednie akcje, np. wysłanie odpowiedzi lub przekazanie sprawy do pracownika. Agent AI może działać autonomicznie, reagując na zdarzenia w czasie rzeczywistym.</p>
         </div>
     </div>
     
     <div id="examples" class="tab-content">
-        <h1>Przykłady</h1>
+        <h1 class="page-title">Przykłady</h1>
         <div class="card">
-            <h2>Automatyzacja procesowania faktur</h2>
-            <p>Ten przykład pokazuje, jak N8N może zautomatyzować zarządzanie fakturami sprzedażowymi i kosztowymi. Proces wygląda następująco:</p>
+            <h2>1. Automatyzacja procesowania faktur</h2>
+            <p>Ten przepływ pracy pokazuje, jak N8N może zautomatyzować zarządzanie fakturami sprzedażowymi i kosztowymi. Proces jest w pełni zautomatyzowany, co pozwala na generowanie podsumowania podatku VAT bez ręcznego liczenia. Workflow został zbudowany tak, aby przetwarzał pliki PDF z Google Drive, wydobywał z nich kluczowe dane, a następnie zapisywał je w odpowiednich zakładkach arkusza Google Sheets.</p>
             <ul>
-                <li><strong>Trigger:</strong> Uruchamiany ręcznie, zdefiniowanymi datami początkową i końcową.</li>
-                <li><strong>Przygotowanie arkusza:</strong> Tworzony jest nowy arkusz Google Sheets z trzema zakładkami: "Sprzedaż", "Zakupy" i "Podsumowanie". Dodawane są do nich odpowiednie nagłówki kolumn.</li>
-                <li><strong>Pobieranie faktur:</strong> N8N przeszukuje i pobiera pliki faktur z Google Drive.</li>
-                <li><strong>Ekstrakcja danych:</strong> Użyty jest węzeł do ekstrakcji danych tekstowych z plików PDF. Następnie, za pomocą kodu JavaScript z wykorzystaniem wyrażeń regularnych (regex), kluczowe dane, takie jak numer faktury, kwota netto/brutto i VAT, są wyodrębniane i strukturyzowane.</li>
-                <li><strong>Filtrowanie i zapis:</strong> Faktury są filtrowane na podstawie daty i typu (sprzedażowe/zakupowe). Dane są następnie zapisywane w odpowiednich zakładkach arkusza Google Sheets.</li>
-                <li><strong>Podsumowanie:</strong> Wartości z obu zakładek są sumowane, a różnica między VAT-em sprzedażowym a zakupowym jest obliczana i zapisywana w zakładce "Podsumowanie".</li>
+                <li><strong>Trigger:</strong> Uruchamiany ręcznie zdefiniowanymi datami, co pozwala przetwarzać faktury za konkretny okres rozliczeniowy (np. na koniec miesiąca).</li>
+                <li><strong>Przygotowanie arkusza:</strong> N8N tworzy nowy arkusz Google Sheets z trzema zakładkami: "Sprzedaż", "Zakupy" i "Podsumowanie". Dodawane są do nich odpowiednie nagłówki.</li>
+                <li><strong>Pobieranie i ekstrakcja danych:</strong> System przeszukuje i pobiera pliki faktur z Google Drive. Następnie, za pomocą węzła **Extract From File** i skryptu JavaScript z **wyrażeniami regularnymi (regex)**, wyodrębnia dane takie jak numer faktury, kwota VAT czy typ faktury.</li>
+                <li><strong>Filtrowanie i zapis:</strong> Węzeł **If** filtruje faktury na podstawie daty i typu. Dane są następnie zapisywane w odpowiednich zakładkach arkusza za pomocą węzła **Append Row In Sheet**.</li>
+                <li><strong>Podsumowanie:</strong> Na końcu, węzły **Summarize** i **Merge** agregują dane, a prosty skrypt oblicza różnicę między VAT-em ze sprzedaży a VAT-em z zakupów, umieszczając wynik w podsumowaniu.</li>
             </ul>
         </div>
         
         <div class="card">
-            <h2>Agent AI do obsługi skrzynki e-mail</h2>
-            <p>Ten przykład ilustruje, jak N8N może stworzyć inteligentnego agenta AI, który w czasie rzeczywistym reaguje na przychodzące wiadomości e-mail. Proces składa się z następujących kroków:</p>
+            <h2>2. Agent AI do obsługi skrzynki e-mail</h2>
+            <p>Ten zaawansowany przykład ilustruje, jak N8N może stworzyć inteligentnego agenta AI, który w czasie rzeczywistym reaguje na przychodzące wiadomości e-mail. Agent, oparty o model językowy Google Gemini, podejmuje decyzje na podstawie treści wiadomości.</p>
             <ul>
-                <li><strong>Trigger:</strong> Uruchamiany automatycznie co minutę przez węzeł Gmail, sprawdzający nowe wiadomości.</li>
-                <li><strong>Agent AI:</strong> Główne centrum decyzyjne. Na podstawie zdefiniowanego promptu i dostarczonych "narzędzi", agent analizuje treść e-maila.
-                <ul>
-                    <li><strong>Klasyfikacja:</strong> Agent klasyfikuje wiadomość jako "zapytanie", "zamówienie" lub "spam".</li>
-                    <li><strong>Podejmowanie decyzji:</strong>
-                        <ul>
-                            <li>Dla <strong>zapytań</strong>, agent rozpoznaje kategorię produktu i przekazuje wiadomość do odpowiedniego pracownika, wysyłając mu podsumowanie na e-mail.</li>
-                            <li>Dla <strong>zamówień</strong>, agent sprawdza dostępność, cenę i czas dostawy produktu. Jeśli produkt jest niedostępny, wysyła klientowi e-mail z przeprosinami. Jeśli jest dostępny, wysyła informacje o cenie i dostawie.</li>
-                            <li>Dla <strong>spamu</strong>, przepływ pracy jest kończony.</li>
-                        </ul>
-                    </li>
-                </ul>
+                <li><strong>Trigger:</strong> Węzeł **Gmail** ustawiony w trybie <strong>Every Minute</strong>, co pozwala na sprawdzanie skrzynki co minutę i reagowanie na nowe wiadomości niemal natychmiast.</li>
+                <li><strong>Agent AI:</strong> Główny element decyzyjny. Agent używa niestandardowego **promptu**, który definiuje jego sposób działania, oraz ma dostęp do zewnętrznych danych (narzędzi), np. listy produktów i pracowników w Google Sheets.</li>
+                <li><strong>Klasyfikacja:</strong> Agent klasyfikuje wiadomość jako "zapytanie", "zamówienie" lub "spam". W zależności od wyniku, podejmuje różne działania.</li>
+                <li><strong>Podejmowanie decyzji:</strong>
+                    <ul>
+                        <li>Dla <strong>zapytań</strong>, agent rozpoznaje kategorię produktu i przekazuje wiadomość do odpowiedniego pracownika, generując e-mail z podsumowaniem.</li>
+                        <li>Dla <strong>zamówień</strong>, agent sprawdza dostępność, cenę i czas dostawy produktu. Następnie wysyła do klienta odpowiednią informację, albo z ceną i czasem dostawy, albo z przeprosinami za brak dostępności.</li>
+                        <li>Dla <strong>spamu</strong>, przepływ pracy jest kończony, co oszczędza zasoby i czas.</li>
+                    </ul>
                 </li>
-                <li><strong>Narzędzia:</strong> Agent ma dostęp do zewnętrznych danych, takich jak lista pracowników i produktów, przechowywanych w Google Sheets, co pozwala mu na podejmowanie świadomych decyzji. Agent może także używać narzędzia "Wyślij wiadomość" (Gmail) do komunikacji z klientami i pracownikami.</li>
             </ul>
         </div>
     </div>
     
     <div id="to-remember" class="tab-content">
-        <h1>Do zapamiętania</h1>
+        <h1 class="page-title">Do zapamiętania</h1>
         <div class="sticky-notes-container">
             <div class="sticky-note">
                 <h4>N8N: Open Source</h4>
@@ -478,7 +445,7 @@
     </div>
     
     <div id="common-mistakes" class="tab-content">
-        <h1>Najczęstsze błędy</h1>
+        <h1 class="page-title">Najczęstsze błędy</h1>
         <div class="card">
             <p>Podczas pracy z N8N, zwłaszcza na początku, łatwo jest popełnić błędy, które mogą uniemożliwić prawidłowe działanie automatyzacji. Oto lista najczęstszych pułapek i wskazówki, jak ich unikać:</p>
             <div class="accordion-item">
@@ -521,7 +488,7 @@
     </div>
     
     <div id="more-knowledge" class="tab-content">
-        <h1>Więcej wiedzy</h1>
+        <h1 class="page-title">Więcej wiedzy</h1>
         <div class="card">
             <h2>Dodatkowe materiały do nauki:</h2>
             <ul>
@@ -537,12 +504,18 @@
                 <li><strong><a href="https://make.com/" target="_blank">Platforma Make.com</a></strong>
                     <p>Jedna z czołowych alternatyw dla N8N. Make oferuje wizualny edytor i ogromną liczbę integracji, co czyni go potężnym narzędziem do automatyzacji, wartym poznania dla porównania i poszerzenia horyzontów.</p>
                 </li>
+                <li><strong><a href="https://zapier.com/" target="_blank">Zapier</a></strong>
+                    <p>Jeden z najpopularniejszych narzędzi do automatyzacji, oferujący prosty interfejs dla początkujących. Chociaż jest mniej elastyczny niż N8N, warto poznać jego możliwości jako punkt odniesienia dla narzędzi no-code.</p>
+                </li>
+                <li><strong><a href="https://www.zdnet.com/article/what-is-open-source/" target="_blank">Czym jest Open Source?</a></strong>
+                    <p>Artykuł wyjaśniający, czym jest oprogramowanie open source, jakie są jego zalety i dlaczego jest tak popularne w świecie technologii. Zrozumienie tego konceptu jest kluczowe dla pełnego docenienia N8N.</p>
+                </li>
             </ul>
         </div>
     </div>
     
     <div id="quiz" class="tab-content">
-        <h1>Quiz wiedzy</h1>
+        <h1 class="page-title">Quiz wiedzy</h1>
         <div class="quiz-container">
             <div id="quiz-content"></div>
             <div id="quiz-navigation" class="quiz-navigation">
@@ -551,6 +524,7 @@
                 <button id="check-btn" style="display:none;">Sprawdź wiedzę</button>
             </div>
             <div id="quiz-result" class="quiz-result">
+                <h3>Wynik quizu</h3>
                 <p id="result-text"></p>
                 <img id="cat-image" src="" alt="Wynik quizu">
                 <p id="motivation-quote"></p>
@@ -807,7 +781,7 @@
         function updateNavigation() {
             prevBtn.style.display = currentQuestionIndex > 0 ? 'block' : 'none';
             nextBtn.style.display = currentQuestionIndex < questions.length - 1 ? 'block' : 'none';
-            checkBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'block' : 'none';
+            checkBtn.style.display = currentQuestionIndex === questions.length - 1 && userAnswers.every(ans => ans !== null) ? 'block' : 'none';
         }
         
         function navigate(direction) {
@@ -822,12 +796,6 @@
         
         function checkAnswers() {
             let correctAnswers = 0;
-            const allQuestionsAnswered = userAnswers.every(answer => answer !== null);
-            
-            if (!allQuestionsAnswered) {
-                alert('Proszę odpowiedzieć na wszystkie pytania.');
-                return;
-            }
             
             questions.forEach((q, i) => {
                 const isCorrect = userAnswers[i] === q.answer;
@@ -844,6 +812,7 @@
                         label.style.backgroundColor = '#f44336';
                         label.style.color = 'white';
                     }
+                    label.style.pointerEvents = 'none';
                 });
             });
             
@@ -869,7 +838,7 @@
             }
             
             resultText.textContent = `Twój wynik: ${correctAnswers}/${questions.length}`;
-            catImage.src = catImages[catType];
+            catImage.src = `uploaded:${catImages[catType]}`;
             catImage.style.display = 'block';
             motivationQuote.textContent = motivationQuotes[quoteIndex];
             
@@ -887,11 +856,34 @@
             loadQuestion();
         }
         
-        nextBtn.addEventListener('click', () => navigate(1));
-        prevBtn.addEventListener('click', () => navigate(-1));
+        nextBtn.addEventListener('click', () => {
+            const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+            if (selectedOption) {
+                userAnswers[currentQuestionIndex] = parseInt(selectedOption.value);
+            }
+            currentQuestionIndex += 1;
+            loadQuestion();
+        });
+        
+        prevBtn.addEventListener('click', () => {
+            const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+            if (selectedOption) {
+                userAnswers[currentQuestionIndex] = parseInt(selectedOption.value);
+            }
+            currentQuestionIndex -= 1;
+            loadQuestion();
+        });
+        
         checkBtn.addEventListener('click', checkAnswers);
         resetBtn.addEventListener('click', resetQuiz);
         
+        quizContainer.addEventListener('change', () => {
+             const allQuestionsAnswered = Array.from(document.querySelectorAll('.options input:checked')).length === questions.length;
+             if (currentQuestionIndex === questions.length - 1) {
+                checkBtn.disabled = !allQuestionsAnswered;
+             }
+        });
+
         loadQuestion();
     });
 </script>
