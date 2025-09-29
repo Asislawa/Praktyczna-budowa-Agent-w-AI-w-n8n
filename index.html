@@ -15,7 +15,7 @@
             --light-cream: #f5f5dc;
             --white: #ffffff;
             --dark-text: #1a1a2e;
-            --navy-blue-text: #000080;
+            --sticky-note-text: #17336B;
             --light-text: #e0e0e0;
             --link-color: #a0c4ff;
         }
@@ -157,7 +157,7 @@
         }
         
         h4 {
-            color: var(--navy-blue-text);
+            color: var(--dark-text);
         }
 
         p, li {
@@ -232,7 +232,6 @@
 
         .sticky-note {
             background-color: var(--light-cream);
-            color: var(--navy-blue-text);
             padding: 20px;
             border-radius: 5px;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
@@ -252,7 +251,11 @@
 
         .sticky-note h4 {
             margin-top: 0;
-            color: var(--navy-blue-text);
+            color: var(--sticky-note-text);
+        }
+        
+        .sticky-note p {
+            color: var(--sticky-note-text);
         }
         
         .quiz-container {
@@ -361,7 +364,7 @@
     </div>
     
     <div id="key-concepts" class="tab-content">
-        <h1 class="page-title">Kluczowe pojęcia</h1>
+        <h1 class="page-title" style="color: var(--light-cream);">Kluczowe pojęcia</h1>
         <div class="card">
             <h2>Czym jest platforma N8N?</h2>
             <p><strong>N8N</strong> to elastyczne narzędzie do automatyzacji, które pozwala łączyć ze sobą różne aplikacje i usługi, by wykonywały powtarzalne zadania w pełni automatycznie. Można go używać do tworzenia przepływów prac, nazywanych **workflow**, które są ciągami kroków realizującymi konkretne czynności bez ręcznej ingerencji. N8N jest rozwiązaniem typu **open source**, co oznacza, że jego kod źródłowy jest dostępny dla wszystkich, a platformę można instalować zarówno w chmurze, jak i lokalnie na własnym serwerze czy komputerze.</p>
@@ -390,7 +393,7 @@
     </div>
     
     <div id="examples" class="tab-content">
-        <h1 class="page-title">Przykłady</h1>
+        <h1 class="page-title" style="color: var(--light-cream);">Przykłady</h1>
         <div class="card">
             <h2>1. Automatyzacja procesowania faktur</h2>
             <p>Ten przepływ pracy pokazuje, jak N8N może zautomatyzować zarządzanie fakturami sprzedażowymi i kosztowymi. Proces jest w pełni zautomatyzowany, co pozwala na generowanie podsumowania podatku VAT bez ręcznego liczenia. Workflow został zbudowany tak, aby przetwarzał pliki PDF z Google Drive, wydobywał z nich kluczowe dane, a następnie zapisywał je w odpowiednich zakładkach arkusza Google Sheets.</p>
@@ -422,7 +425,7 @@
     </div>
     
     <div id="to-remember" class="tab-content">
-        <h1 class="page-title">Do zapamiętania</h1>
+        <h1 class="page-title" style="color: var(--light-cream);">Do zapamiętania</h1>
         <div class="sticky-notes-container">
             <div class="sticky-note">
                 <h4>N8N: Open Source</h4>
@@ -452,7 +455,7 @@
     </div>
     
     <div id="common-mistakes" class="tab-content">
-        <h1 class="page-title">Najczęstsze błędy</h1>
+        <h1 class="page-title" style="color: var(--light-cream);">Najczęstsze błędy</h1>
         <div class="card">
             <p>Podczas pracy z N8N, zwłaszcza na początku, łatwo jest popełnić błędy, które mogą uniemożliwić prawidłowe działanie automatyzacji. Oto lista najczęstszych pułapek i wskazówki, jak ich unikać:</p>
             <div class="accordion-item">
@@ -495,7 +498,7 @@
     </div>
     
     <div id="more-knowledge" class="tab-content">
-        <h1 class="page-title">Więcej wiedzy</h1>
+        <h1 class="page-title" style="color: var(--light-cream);">Więcej wiedzy</h1>
         <div class="card">
             <h2>Dodatkowe materiały do nauki:</h2>
             <ul>
@@ -522,7 +525,7 @@
     </div>
     
     <div id="quiz" class="tab-content">
-        <h1 class="page-title">Quiz wiedzy</h1>
+        <h1 class="page-title" style="color: var(--light-cream);">Quiz wiedzy</h1>
         <div class="quiz-container">
             <div id="quiz-content"></div>
             <div id="quiz-navigation" class="quiz-navigation">
