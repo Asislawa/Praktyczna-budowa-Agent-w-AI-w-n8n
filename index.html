@@ -352,16 +352,22 @@
         }
         
         .result-view .options label.correct {
-            background-color: #4CAF50;
-            color: white;
+            background-color: #90EE90; /* Light Green */
+            color: black;
             font-weight: bold;
         }
 
         .result-view .options label.incorrect-selected {
-            background-color: #888;
-            color: white;
+            background-color: #FFB6C1; /* Light Pink */
+            color: black;
         }
-        
+
+        .result-view .options label.selected-but-correct {
+            background-color: #90EE90; /* Light Green */
+            color: black;
+            font-weight: bold;
+        }
+
         #download-pdf-btn {
             background-color: #555;
             color: white;
@@ -828,12 +834,11 @@
         }
 
         function updateNavigation() {
-            const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
-            nextBtn.disabled = !selectedOption;
+            const allAnswered = userAnswers.every(ans => ans !== null);
+            nextBtn.disabled = userAnswers[currentQuestionIndex] === null;
             prevBtn.style.display = currentQuestionIndex > 0 ? 'block' : 'none';
             nextBtn.style.display = currentQuestionIndex < questions.length - 1 ? 'block' : 'none';
             
-            const allAnswered = userAnswers.every(ans => ans !== null);
             checkBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'block' : 'none';
             checkBtn.disabled = !allAnswered;
         }
@@ -865,16 +870,15 @@
                         <div class="options result-view">
                             ${q.options.map((option, j) => {
                                 let labelClass = '';
-                                let checkmark = '';
                                 if (j === q.answer) {
                                     labelClass = 'correct';
-                                    checkmark = ' ✓';
-                                } else if (userAnswers[i] === j) {
+                                }
+                                if (userAnswers[i] === j && userAnswers[i] !== q.answer) {
                                     labelClass = 'incorrect-selected';
                                 }
                                 return `
                                     <label class="${labelClass}">
-                                        <span>${option}${checkmark}</span>
+                                        <span>${option}</span>
                                     </label>
                                 `;
                             }).join('')}
